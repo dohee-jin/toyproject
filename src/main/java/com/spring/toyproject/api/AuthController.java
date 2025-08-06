@@ -32,12 +32,13 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest requestDto) {
         log.info("회원가입 요청: {}", requestDto.getUsername());
+
         UserResponse response = userService.signup(requestDto);
         return ResponseEntity
                 .ok()
                 .body(ApiResponse
                         .success("회원가입이 성공적으로 완료되었습니다."
-                        ,requestDto
+                        ,response
                         )
                 );
     }
