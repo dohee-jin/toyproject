@@ -11,7 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BusinessException extends RuntimeException{
 
+    private ErrorCode errorCode;
+
     public BusinessException(String message) {
         super(message);
+    }
+
+    public BusinessException(ErrorCode errorCode) {
+        super(errorCode.getMessage()); // 부모 runtimeexception한테 보내야 e.getMessage 사용이 가능
+        this.errorCode = errorCode;
     }
 }
