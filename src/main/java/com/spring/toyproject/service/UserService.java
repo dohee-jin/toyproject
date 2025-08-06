@@ -1,6 +1,7 @@
 package com.spring.toyproject.service;
 
 import com.spring.toyproject.domain.dto.request.SignUpRequest;
+import com.spring.toyproject.domain.dto.response.UserResponse;
 import com.spring.toyproject.domain.entity.User;
 import com.spring.toyproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class UserService {
      * 회원 가입 로직
      * 엔티티를 클라이언트로부터 받아오는 건 위험함
      */
-    public void signup(SignUpRequest requestDto) {
+    public UserResponse signup(SignUpRequest requestDto) {
 
         // dto를 entity 로 변경
         User user = User.builder()
@@ -39,5 +40,7 @@ public class UserService {
         // db insert 명령
         User saved = userRepository.save(user);
         log.info("새로운 사용자 가입: {}", user);
+
+        return UserResponse.from(saved);
     }
 }
