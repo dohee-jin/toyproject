@@ -138,7 +138,7 @@ const SignupPage = () => {
     }, 500);
 
     // 이메일 입력 이벤트처리
-    const handleEmailInput = debounce(e => {
+    const handlerEmailInput = debounce(e => {
 
         const email = e.target.value;
 
@@ -162,7 +162,11 @@ const SignupPage = () => {
     // form 제출 이벤트
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('폼이 제출됨');
+
+        // 마지막으로 폼 전체 검사
+        if(!utils.validateForm(state.$form)) {
+            alert("입력값 필드가 올바르지 않습니다.");
+        }
 
         const payload = {
             username: state.$usernameInput.value,
@@ -186,6 +190,66 @@ const SignupPage = () => {
 
     }
 
+    // 패스워드 검증 이벤트 함수
+    const handlerPasswordInput = debounce(e => {
+        const password = e.target.value;
+
+        // 비밀번호 강도 검증
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const isLongEnough = password.length >= 8;
+
+        let strengthMessage = '';
+        let isValid = false;
+
+        if (
+            isLongEnough &&
+            hasUpperCase &&
+            hasLowerCase &&
+            hasNumbers &&
+            hasSpecialChar
+        ) {
+            strengthMessage = '매우 강한 비밀번호입니다.';
+            isValid = true;
+        } else if (isLongEnough && hasSpecialChar && hasLowerCase && hasNumbers) {
+            strengthMessage = '강한 비밀번호입니다.';
+            isValid = true;
+        } else if (isLongEnough && hasLowerCase && hasNumbers) {
+            strengthMessage = '보통 비밀번호입니다.';
+            isValid = false;
+        } else {
+            strengthMessage =
+                '비밀번호는 8자 이상이며, 대소문자, 숫자, 특수문자를 포함해야 합니다.';
+            isValid = false;
+        }
+
+        updateInputState(state.$passwordInput, isValid, strengthMessage);
+
+        // 비밀번호 확인란을 작성한 이후에 다시 비밀번호란을 변경한 경우
+        // 비밀번호 확인란을 다시 검사해야 함.
+        const confirmPassword = state.$confirmPasswordInput.value;
+        if(confirmPassword) {
+            handlerConfirmPasswordInput({target: state.$confirmPasswordInput});
+        }
+
+    }, 500);
+
+    // 패스워드 확인란 검증 이벤트 함수
+    const handlerConfirmPasswordInput = debounce(e => {
+
+        const confirmPassword = e.target.value
+        const password = state.$passwordInput.value;
+
+        if(confirmPassword !== password) {
+            updateInputState(state.$confirmPasswordInput, false, "비밀번호가 일치하지 않습니다.");
+        } else {
+            updateInputState(state.$confirmPasswordInput, true, "비밀번호가 일치합니다.");
+        }
+
+    }, 500);
+
     // 이벤트 걸기
     const bindEvents =() => {
         // 1. form 제출 이벤트
@@ -193,7 +257,11 @@ const SignupPage = () => {
         // 2. 사용자명 입력 이벤트
         state.$usernameInput?.addEventListener('input', handlerUsernameInput);
         // 3. 이메일 입력 이벤트
-        state.$emailInput?.addEventListener('input', handleEmailInput);
+        state.$emailInput?.addEventListener('input', handlerEmailInput);
+        // 4. 비밀번호 입력 이벤트
+        state.$passwordInput?.addEventListener('input', handlerPasswordInput);
+        // 5. 비밀번호 확인 입력 이벤트
+        state.$confirmPasswordInput?.addEventListener('input', handlerConfirmPasswordInput);
 
     };
 
