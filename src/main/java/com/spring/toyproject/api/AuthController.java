@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /*
     API 응답은 언제나 일관적인게 중요함
@@ -61,5 +58,31 @@ public class AuthController {
                                 , response
                         )
                 );
+    }
+
+    /**
+     * 사용자명 중복 체크 API
+     * GET /api/auth/check-username?username=xxx
+     */
+    @GetMapping("/check-username")
+    public ResponseEntity<?> checkUsername(@RequestParam String username){
+
+        boolean exists = userService.checkDuplicateUsername(username);
+
+        return ResponseEntity.ok()
+                .body(ApiResponse.success(exists ? "이미 사용 중인 이름입니다." : "사용 가능한 이름입니다", exists));
+    }
+
+    /**
+     * 이메일 중복 체크 API
+     * GET /api/auth/check-email?email=xxx
+     */
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email){
+
+        boolean exists = userService.checkDuplicateEmail(email);
+
+        return ResponseEntity.ok()
+                .body(ApiResponse.success(exists ? "이미 사용 중인 이메일입니다." : "사용 가능한 이메일입니다", exists));
     }
 }
