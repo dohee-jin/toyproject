@@ -8,13 +8,12 @@ import com.spring.toyproject.domain.entity.User;
 import com.spring.toyproject.exception.BusinessException;
 import com.spring.toyproject.exception.ErrorCode;
 import com.spring.toyproject.jwt.JwtProvider;
-import com.spring.toyproject.repository.UserRepository;
+import com.spring.toyproject.repository.base.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestClient;
 
 /**
  * 사용자 모듈 서비스 클래스

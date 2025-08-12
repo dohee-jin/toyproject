@@ -29,4 +29,16 @@ public class PageController {
     public String signup() {
         return "signup";
     }
+
+    // 대시보드로 이동
+    @GetMapping("/dashboard")
+    public String dashboard() {
+        return "dashboard";
+    }
+
+    // 여행목록으로 이동
+    @GetMapping("/trips")
+    public String trips() {
+        return "trip-list";
+    }
 }
