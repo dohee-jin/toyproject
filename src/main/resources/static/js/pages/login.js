@@ -42,7 +42,6 @@ const LoginPage = () => {
     const init = () => {
         state.$form = document.getElementById('loginForm');
         bindEvents();
-        console.log(`123`);
     };
 
     // public 함수

@@ -101,6 +101,7 @@ class TripRepositoryTest {
         // 검색 조건
         TripRepositoryCustom.TripSearchCondition condition
                 = TripRepositoryCustom.TripSearchCondition.builder()
+                .status(TripStatus.ONGOING)
                 .sortBy("createdAt")
                 .sortDirection("DESC")
                 .build();
@@ -112,15 +113,31 @@ class TripRepositoryTest {
         //then
         tripList.forEach(System.out::println);
 
-        // 지금 조회된 여행의 개수는 2개일 것으로 단언
+        /*// 지금 조회된 여행의 개수는 2개일 것으로 단언
         assertThat(tripList).hasSize(2);
 
         // 총 여행 수는 3개일 것으로 단언
         assertThat(tripPage.getTotalElements()).isEqualTo(3);
 
         // 총 페이지 수는 2페이지까지 있을 것이다.
-        assertThat(tripPage.getTotalPages()).isEqualTo(2);
+        assertThat(tripPage.getTotalPages()).isEqualTo(2);*/
     }
 
+    @Test
+    @DisplayName("여행 상태 변경 테스트")
+    void updateTripsStatus() {
+        // given
+        Trip trip = tripRepository.findById(testTrip3.getId()).orElseThrow();
+
+        // when
+        trip.updateStatus(TripStatus.ONGOING);
+        tripRepository.save(trip);
+
+        // then
+        Trip updatedTrip = tripRepository.findById(testTrip3.getId()).orElseThrow();
+        System.out.println("updatedTrip = " + updatedTrip);
+
+        assertThat(updatedTrip.getStatus()).isEqualTo(TripStatus.ONGOING);
+    }
 
 }

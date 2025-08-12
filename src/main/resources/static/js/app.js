@@ -1,17 +1,76 @@
 /**
  * 우리 앱의 진입점 js 파일
  */
-import {authService} from "./utils/auth.js";
+import { authService } from "./utils/auth.js";
+import { PAGE_CONFIG } from "./config/routes-config.js";
+import { showAlert } from "./utils/common.js";
+
+/**
+ * 라우드 가드 함수
+ * @param requiresAuth - 이 페이지 진입에 로그인이 필요한지 여부
+ * @returns {boolean} - true 일 경우 페이지 진입 허용, false 일 경우 로그인 페이로 이동
+ */
+const checkRouteAccess = (requiresAuth) => {
+    // requiresAuth 는 정적으로 페이지 진입 시 인증이 필요한지를 표현하는 변수
+    // 동적으로 로그인이 되었을 때는 가드처리를 수행하면 안된다.
+    if(requiresAuth && !authService.isAuthenticated()) {
+        // 가드 처리
+        // 오버레이 표시
+        const overlay = document.createElement('div');
+        overlay.innerHTML = `
+              <div style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: #f8f9fa;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;
+              ">
+                <div style="text-align: center;">
+                  <div style="
+                    width: 40px;
+                    height: 40px;
+                    border: 4px solid #e3e3e3;
+                    border-top: 4px solid #007bff;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin: 0 auto 20px;
+                  "></div>
+                  <p style="color: #6c757d; margin: 0; font-family: Arial, sans-serif;">인증 확인 중...</p>
+                </div>
+              </div>
+              <style>
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+              </style>
+        `;
+        document.body.appendChild(overlay);
+
+        // 잠깐 후 얼럿 표시 및 리다이렉트
+        setTimeout(() => {
+            showAlert('로그인이 필요한 페이지입니다. 로그인 페이지로 이동합니다.');
+            setTimeout(() => {
+                overlay.remove();
+                window.location.href = '/login';
+            }, 1500);
+        }, 800);
+        return false;
+    }
+    return true;
+
+}
 
 // 현재 페이지 확인 함수
 const getCurrentPage = () => {
 
     const path = window.location.pathname;
-    if (path === '/login') return 'login';
-    if (path === '/signup') return 'signup';
-    if (path === '/dashboard') return 'dashboard';
-    if (path === '/') return 'home';
-    return 'default';
+    return PAGE_CONFIG[path];
 
 }
 
@@ -20,6 +79,11 @@ const App = () => {
     // 외부 모듈 js 파일들을 로드
     // 현재 어떤 페이지에 진입했는지 알아야 그에 맞는 js를 가져올 수 있음
     const currentPage = getCurrentPage();
+
+    // 라우트 가드 처리
+    if(!checkRouteAccess(currentPage.requiresAuth)) {
+        return;
+    }
 
     // 공통 이벤트 바인딩
     const bindEvents = () => {
@@ -42,7 +106,7 @@ const App = () => {
             // 앱의 공통 이벤트 바인딩
             bindEvents();
 
-            const module = await import(`./pages/${currentPage}.js`);
+            const module = await import(`./pages/${currentPage.module}.js`);
             // console.log(module);
 
             if(module) {
@@ -52,7 +116,7 @@ const App = () => {
             }
 
         } catch (error) {
-            // console.log(`페이지 모듈 ${currentPage} 로드 실패!`, error);
+            console.log(`페이지 모듈 ${currentPage.module} 로드 실패!`, error);
         }
     }
 
@@ -62,6 +126,10 @@ const App = () => {
 
 // 기본 JavaScript 파일
 document.addEventListener('DOMContentLoaded', () => {
+
+    // 라우트 가드 체크 (인증되지 ㅇ낳은 사용자가 접근할 수 없는 페이지 로그인 페이지로 리다이렉팅)
+
+
     console.log('여행 기록 관리 시스템이 로드되었습니다.');
     App();
 });
