@@ -1,6 +1,7 @@
 package com.spring.toyproject.config;
 
 import com.spring.toyproject.jwt.AuthenticationFilter;
+import com.spring.toyproject.jwt.AuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthenticationFilter authenticationFilter;
+    private final AuthenticationFilter jwtAuthenticationFilter;
 
     // 기본 인증 옵션 설정
     @Bean
@@ -41,27 +42,31 @@ public class SecurityConfig {
 
 
                 // 인가 설정
-                .authorizeHttpRequests(auth -> auth
-                        // 공개 접근 가능한 경로(로그인 불필요)
-                        .requestMatchers(
-                            "/"
-                            , "/login"
-                            , "/signup"
+                .authorizeHttpRequests(
+                        auth -> auth
+                                // 공개 접근 가능한 경로 (로그인 불필요)
+                                .requestMatchers(
+                                        "/"
+                                        , "/login"
+                                        , "/signup"
+                                        , "/trips/**"
+                                        , "/dashboard"
+                                ).permitAll()
+                                .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
 
-                        ).permitAll()
-                        .requestMatchers("/css/**", "/is/**", "/images?**").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
+                                // 인증 및 권한이 필요한 경로
+//                                .requestMatchers("/api/premium/**").hasAnyAuthority("VIP", "GOLD")
+                                .requestMatchers("/api/**").authenticated()
 
-                        // 인증 및 권한이 필요한 경로
-                        .requestMatchers("/api/**").authenticated()
-
-                        // 기타 경로
-                        // 모든 다른 요청은 인증이 필요하다.
-                        .anyRequest().authenticated()
+                                // 기타 경로
+                                // 모든 다른 요청은 인증이 필요하다
+                                .anyRequest().authenticated()
                 )
 
+
                 // 커스텀 필터 설정
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         ;
 
         return http.build();

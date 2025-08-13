@@ -31,7 +31,7 @@ public class TripRepositoryImpl implements TripRepositoryCustom {
     private final JPAQueryFactory factory;
 
     @Override
-    public Page<Trip> findTripsByUser(User user, TripSearchCondition condition, Pageable pageable) {
+    public Page<Trip> getTripList(User user, TripSearchCondition condition, Pageable pageable) {
 
         /*
             SELECT *
@@ -123,4 +123,5 @@ public class TripRepositoryImpl implements TripRepositoryCustom {
 
         return specifier;
     }
+
 }

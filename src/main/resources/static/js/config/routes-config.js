@@ -25,6 +25,10 @@ export const PAGE_CONFIG = {
     '/trips' : {
         module: 'trip-list',
         requiresAuth: true
-    }
+    },
+    '/trip/new' : {
+        module: 'trip-form',
+        requiresAuth: true
+    },
 }
 

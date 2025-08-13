@@ -70,7 +70,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String bearerToken = request.getHeader("Authorization");
 
         // 2. 토큰을 파싱하면 앞에 접두사로 Bearer가 붙는데 이를 제거
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;

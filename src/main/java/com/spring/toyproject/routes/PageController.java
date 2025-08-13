@@ -41,4 +41,10 @@ public class PageController {
     public String trips() {
         return "trip-list";
     }
+
+    // 여행목록으로 이동
+    @GetMapping("/trips/new")
+    public String tripsFrom() {
+        return "trip-form";
+    }
 }
