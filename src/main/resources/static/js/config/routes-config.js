@@ -15,7 +15,7 @@ export const PAGE_CONFIG = {
         requiresAuth: false
     },
     '/signup' : {
-        module: 'singup',
+        module: 'signup',
         requiresAuth: false
     },
     '/dashboard' : {
