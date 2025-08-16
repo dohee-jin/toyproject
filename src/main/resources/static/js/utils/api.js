@@ -5,9 +5,7 @@ export const apiService = {
 
     async request(url, options = {}) {
         const defaultOptions = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: {},
         };
 
         // 헤더에 토큰 추가
@@ -17,6 +15,15 @@ export const apiService = {
         }
 
         const config = { ...defaultOptions, ...options };
+
+        // 본문이 FormData 이면 Content-Type 은 브라우저가 설정하도록 둔다
+        const isFormData = config.body instanceof FormData;
+        if (!isFormData) {
+            config.headers = {
+                'Content-Type': 'application/json',
+                ...(config.headers || {}),
+            };
+        }
 
         const response = await fetch(url, config);
         const data = await response.json();
@@ -32,6 +39,13 @@ export const apiService = {
         return this.request(url, {
             method: 'POST',
             body: JSON.stringify(data),
+        });
+    },
+
+    async postMultipart(url, formData) {
+        return this.request(url, {
+            method: 'POST',
+            body: formData,
         });
     },
 

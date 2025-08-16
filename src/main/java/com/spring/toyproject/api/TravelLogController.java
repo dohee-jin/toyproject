@@ -3,6 +3,7 @@ package com.spring.toyproject.api;
 import com.spring.toyproject.domain.dto.common.ApiResponse;
 import com.spring.toyproject.domain.dto.request.TravelLogRequestDto;
 import com.spring.toyproject.service.TravelLogService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,8 @@ public class TravelLogController {
      */
     @PostMapping/*(consumes = "multipart/form-data; boundary=")*/
     public ResponseEntity<?> createTravelLog(
-            @RequestBody TravelLogRequestDto requestDto,
-            @RequestPart(name = "data") Long tripId,
+            @RequestPart(name = "data") @Valid TravelLogRequestDto requestDto,
+            @RequestParam Long tripId,
             @RequestPart(name = "image") List<MultipartFile> files,
             @AuthenticationPrincipal String username
     ) {

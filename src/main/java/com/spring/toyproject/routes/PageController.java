@@ -47,4 +47,10 @@ public class PageController {
     public String tripsFrom() {
         return "trip-form";
     }
+
+    // 여행일지 등록으로 이동
+    @GetMapping("/travel-logs/new")
+    public String travelFrom() {
+        return "travel-log-form";
+    }
 }

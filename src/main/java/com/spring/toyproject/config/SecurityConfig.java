@@ -51,6 +51,7 @@ public class SecurityConfig {
                                         , "/signup"
                                         , "/trips/**"
                                         , "/dashboard"
+                                        , "/travel-logs/**"
                                 ).permitAll()
                                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
