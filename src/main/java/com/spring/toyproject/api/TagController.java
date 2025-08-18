@@ -2,15 +2,16 @@ package com.spring.toyproject.api;
 
 import com.spring.toyproject.domain.dto.request.TagRequestDto;
 import com.spring.toyproject.domain.dto.common.ApiResponse;
+import com.spring.toyproject.domain.dto.response.TagResponseDto;
+import com.spring.toyproject.domain.entity.TagCategory;
 import com.spring.toyproject.service.TagService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 해시태그 관련 API
@@ -28,7 +29,29 @@ public class TagController {
     public ResponseEntity<?> createTag(
             @RequestBody @Valid TagRequestDto requestDto
     ) {
-        tagService.createTag(requestDto);
-        return ResponseEntity.ok(ApiResponse.success("", null));
+        TagResponseDto tag = tagService.createTag(requestDto);
+        return ResponseEntity.ok().body(ApiResponse.success("생성된 tag-id: %s".formatted(tag.getId()), tag));
+    }
+
+    // 카테고리로 해시태그 목록을 조회하는 API
+    /**
+     * 카테고리로 해시태그 목록을 조회하는 API
+     * GET /api/tags?=category={category}
+     */
+    @GetMapping
+    public ResponseEntity<?> getTagsByCategory(@RequestParam(name = "category") TagCategory category) {
+        List<TagResponseDto> list = tagService.getTagsByCategory(category);
+        return ResponseEntity.ok(ApiResponse.success("카테고리로 해시태그 목록 조회가 성공했습니다.", list));
+    }
+
+
+    /**
+     * 검색어가 포함된 해시태그 목록 가져오는 API
+     * GET /api/tags/search?keyword={tagName}
+     */
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<TagResponseDto>>> searchTags(@RequestParam(name = "keyword") String keyword) {
+        List<TagResponseDto> list = tagService.searchTags(keyword);
+        return ResponseEntity.ok(ApiResponse.success("[%s] 검색어를 통한 조회 성공!".formatted(keyword), list));
     }
 }
