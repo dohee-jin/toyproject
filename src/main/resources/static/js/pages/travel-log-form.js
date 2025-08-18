@@ -59,6 +59,7 @@ const TravelLogFormPage = () => {
             showAlert('유효하지 않은 접근입니다.');
             return;
         }
+        // 1. 해시 태그 inset
         await ensureNewTagsCreated();
 
         const payload = {
@@ -432,8 +433,13 @@ const TravelLogFormPage = () => {
     };
 
     const ensureNewTagsCreated = async () => {
+
+        // 사용자가 선택한 새시태그 배열에서 id가 없는 태그들만 필터링
+        // id가 없는 건 db에 없는 새로운 해시태그들이다.
         const pending = state.selectedTags.filter((t) => !t.id);
+
         if (pending.length === 0) return;
+
         const created = await Promise.all(
             pending.map((t) =>
                 apiService

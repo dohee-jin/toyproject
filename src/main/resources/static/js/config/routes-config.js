@@ -26,12 +26,16 @@ export const PAGE_CONFIG = {
         module: 'trip-list',
         requiresAuth: true
     },
-    '/trip/new' : {
+    '/trips/new' : {
         module: 'trip-form',
         requiresAuth: true
     },
     '/travel-logs/new' : {
         module: 'travel-log-form',
+        requiresAuth: true
+    },
+    '/trips/detail' : {
+        module: 'trip-detail',
         requiresAuth: true
     },
 }

@@ -1,6 +1,7 @@
 package com.spring.toyproject.service;
 
 import com.spring.toyproject.domain.dto.request.TripRequest;
+import com.spring.toyproject.domain.dto.response.TripDetailDto;
 import com.spring.toyproject.domain.dto.response.TripListItemDto;
 import com.spring.toyproject.domain.entity.Trip;
 import com.spring.toyproject.domain.entity.User;
@@ -76,4 +77,20 @@ public class TripService {
         return tripPage.map(TripListItemDto::from);
     }
 
+
+    // 단건 조회
+    @Transactional(readOnly = true)
+    public TripDetailDto getTrip(String username, Long tripId) {
+        //사용자 조회
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new BusinessException(ErrorCode.TRIP_NOT_FOUND)
+        );
+        // 여행 1건을 조회 (사용자 소유 여행)
+        Trip trip = tripRepository.findByIdAndUser(tripId, user).orElseThrow(
+                () -> new BusinessException(ErrorCode.TRIP_NOT_FOUND)
+        );
+
+        return TripDetailDto.from(trip);
+
+    }
 }
