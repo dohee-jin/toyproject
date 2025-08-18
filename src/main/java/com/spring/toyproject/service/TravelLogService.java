@@ -2,16 +2,10 @@ package com.spring.toyproject.service;
 
 import com.spring.toyproject.config.FileUploadConfig;
 import com.spring.toyproject.domain.dto.request.TravelLogRequestDto;
-import com.spring.toyproject.domain.entity.TravelLog;
-import com.spring.toyproject.domain.entity.TravelPhoto;
-import com.spring.toyproject.domain.entity.Trip;
-import com.spring.toyproject.domain.entity.User;
+import com.spring.toyproject.domain.entity.*;
 import com.spring.toyproject.exception.BusinessException;
 import com.spring.toyproject.exception.ErrorCode;
-import com.spring.toyproject.repository.base.TravelLogRepository;
-import com.spring.toyproject.repository.base.TravelPhotoRepository;
-import com.spring.toyproject.repository.base.TripRepository;
-import com.spring.toyproject.repository.base.UserRepository;
+import com.spring.toyproject.repository.base.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +32,8 @@ public class TravelLogService {
     private final TripRepository tripRepository;
     private final UserRepository userRepository;
     private final TravelPhotoRepository travelPhotoRepository;
+    private final TravelLogTagRepository travelLogTagRepository;
+    private final TagRepository tagRepository;
 
     /**
      * 여행일지 생성
@@ -74,8 +70,16 @@ public class TravelLogService {
                 .trip(trip)
                 .build();
 
-        // 여행 일지 저장
-        TravelLog savedTravel = travelLogRepository.save(travelLog);
+        // 여행 일지 저장 -> 여행 일지의 id 가 생성됨
+        TravelLog savedTravelLog = travelLogRepository.save(travelLog);
+
+        // 해시태그가 있다면 해시태그도 중간테이블에 연계저장
+        List<Long> tagIds = request.getTagIds();
+        if(tagIds != null && !tagIds.isEmpty()) {
+           tagIds.forEach(tagId -> {
+               savedTravelLog.addTag(tagRepository.findById(tagId).orElseThrow());
+           });
+        }
 
         // 이미지가 있다면 이미지도 함께 insert
         if(imageFiles != null && !imageFiles.isEmpty()) {
@@ -122,7 +126,7 @@ public class TravelLogService {
                             .originalFilename(originalFilename)
                             .storedFilename(storedFilename)
                             .filePath("/uploads/" + username + "/" + storedFilename)
-                            .travelLog(savedTravel)
+                            .travelLog(savedTravelLog)
                             .build();
                     travelPhotoRepository.save(photo);
 

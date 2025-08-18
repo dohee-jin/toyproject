@@ -37,7 +37,7 @@ public class TravelLogController {
     public ResponseEntity<?> createTravelLog(
             @RequestPart(name = "data") @Valid TravelLogRequestDto requestDto,
             @RequestParam Long tripId,
-            @RequestPart(name = "image") List<MultipartFile> files,
+            @RequestPart(name = "files") List<MultipartFile> files,
             @AuthenticationPrincipal String username
     ) {
         log.info("여행 일지 생성 API 호출 - 사용자: {}, 여행 ID{}", username, tripId);
