@@ -62,6 +62,10 @@ public class TravelLog {
     @OneToMany(mappedBy = "travelLog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TravelLogTag> travelLogTags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "travelLog", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TravelPhoto> travelPhotos = new ArrayList<>();
+
+
     @Builder
     public TravelLog(Trip trip, String title, String content, LocalDate logDate,
                      String location, String mood, Long expenses, Integer rating) {
@@ -88,7 +92,7 @@ public class TravelLog {
     }
 
 
-   // 태그 관련 편의 메서드
+    // 태그 관련 편의 메서드
     public void addTag(Tag tag) {
         TravelLogTag travelLogTag = TravelLogTag.builder()
                 .travelLog(this)
@@ -99,4 +103,3 @@ public class TravelLog {
 
 
 }
-

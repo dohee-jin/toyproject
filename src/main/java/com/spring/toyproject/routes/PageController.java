@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * 페이지 전환 랜더링용 컨트롤러
- * Thymeleaf 나 JSP 같은 뷰템플릿 페이지를 랜더링
+ * 페이지 전환 렌더링용 컨트롤러
+ * Thymeleaf나 JSP같은 뷰템플릿 페이지를 렌더링
  */
 @Controller
 @Slf4j
@@ -17,47 +17,56 @@ public class PageController {
     public String home() {
         return "index";
     }
-
-    // 로그인으로 이동
+    // 로그인페이지으로 이동
     @GetMapping("/login")
     public String login() {
         return "login";
     }
-
-    // 회원가입으로 이동
+    // 회원가입 페이지로 이동
     @GetMapping("/signup")
     public String signup() {
         return "signup";
     }
 
-    // 대시보드로 이동
+    // 대시보드 페이지로 이동
     @GetMapping("/dashboard")
     public String dashboard() {
         return "dashboard";
     }
 
-    // 여행목록으로 이동
+    // 여행목록 페이지로 이동
     @GetMapping("/trips")
     public String trips() {
         return "trip-list";
     }
 
-    // 여행상세보기로 이동
+    // 여행 등록 페이지
+    @GetMapping("/trips/new")
+    public String tripForm() {
+        return "trip-form";
+    }
+
+    // 여행 상세보기 페이지
     @GetMapping("/trips/detail")
     public String tripsDetail() {
         return "trip-detail";
     }
 
-    // 여행등록으로 이동
-    @GetMapping("/trips/new")
-    public String tripsFrom() {
-        return "trip-form";
-    }
 
-    // 여행일지 등록으로 이동
+    // 여행 일지등록 페이지
     @GetMapping("/travel-logs/new")
-    public String travelFrom() {
+    public String travelForm() {
         return "travel-log-form";
     }
 
+    // 여행 일지 목록 페이지
+    @GetMapping("/travel-logs")
+    public String travelList() {
+        return "travel-log-list";
+    }
+    // 여행 일지 상세보기 페이지
+    @GetMapping("/travel-logs/detail")
+    public String travelDetail() {
+        return "travel-log-detail";
+    }
 }
